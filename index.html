@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipmunk Chat 2.0</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .header {
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            color: #3366ff;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ff3333;
+        }
+        input {
+            background-color: #000000;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            width: 250px;
+            outline: none;
+        }
+        input:focus {
+            border-color: #3366ff;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 272px;
+        }
+        button {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        button:hover {
+            background-color: #3366ff;
+            color: #ffffff;
+        }
+        button#signup-btn {
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+        }
+        button#signup-btn:hover {
+            background-color: #ff3333;
+            border-color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Chipmunk Chat 2.0
+    </div>
+
+    <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password">
+    </div>
+
+    <div class="button-container">
+        <button onclick="login()">Log In</button>
+        <button id="signup-btn" onclick="signup()">Sign Up</button>
+    </div>
+
+    <script>
+        function signup() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if (user && pass) {
+                localStorage.setItem('chat_user', user);
+                localStorage.setItem('chat_pass', pass);
+                alert('You Signed UP, now hit login');
+            }
+        }
+
+        function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const storedUser = localStorage.getItem('chat_user');
+            const storedPass = localStorage.getItem('chat_pass');
+
+            if (user === storedUser && pass === storedPass && user !== "") {
+                window.location.href = 'select_screen.html';
+            } else {
+                alert('ACCESS DENIED');
+            }
+        }
+    </script>
+</body>
+</html>

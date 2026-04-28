@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipmunk Chat 2.0 - Selection</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        #user-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #3366ff;
+            font-size: 14px;
+            border: 1px solid #3366ff;
+            padding: 5px 10px;
+        }
+        .menu-container {
+            border: 2px solid #ffffff;
+            padding: 40px;
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        button {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #ff3333;
+            color: #ffffff;
+        }
+        .decor-line {
+            color: #3366ff;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="user-display">USER: <span id="username-slot">GUEST</span></div>
+
+    <div class="menu-container">
+        <div class="decor-line">-------------------------</div>
+        <h2>SELECT ACTION</h2>
+        <div class="decor-line">-------------------------</div>
+        
+        <div class="action-box">
+            <button onclick="location.href='create_chat.html'">Create A Chat</button>
+            <button onclick="location.href='join_chat.html'">Join A Chat</button>
+        </div>
+    </div>
+
+    <script>
+        const storedUser = localStorage.getItem('chat_user');
+        if (storedUser) {
+            document.getElementById('username-slot').textContent = storedUser;
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

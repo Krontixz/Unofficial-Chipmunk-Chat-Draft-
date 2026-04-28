@@ -73,24 +73,26 @@
     </style>
 </head>
 <body>
-
-    <div class="header">
-        Chipmunk Chat 2.0
+    <div class="header">Chipmunk Chat 2.0</div>
+    <div id="main-ui">
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="username" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password">
+        </div>
+        <div class="button-container">
+            <button onclick="login()">Log In</button>
+            <button id="signup-btn" onclick="signup()">Sign Up</button>
+            <button id="chats-mgr-btn" style="display:none; margin-top:20px; background:#3366ff; color:white;" onclick="toggleManager()">CHATS</button>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>Username</label>
-        <input type="text" id="username" autocomplete="off">
-    </div>
-
-    <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="password">
-    </div>
-
-    <div class="button-container">
-        <button onclick="login()">Log In</button>
-        <button id="signup-btn" onclick="signup()">Sign Up</button>
+    <div id="admin-panel" style="display:none; margin-top:20px; border-top: 1px solid white; padding-top:20px;">
+        <h3 style="color:#ff3333">Management Console</h3>
+        <div id="chat-list-display"></div>
     </div>
 
     <script>
@@ -100,6 +102,7 @@
             if (user && pass) {
                 localStorage.setItem('chat_user', user);
                 localStorage.setItem('chat_pass', pass);
+                document.getElementById('chats-mgr-btn').style.display = 'block';
                 alert('You Signed UP, now hit login');
             }
         }
@@ -107,14 +110,57 @@
         function login() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
-            const storedUser = localStorage.getItem('chat_user');
-            const storedPass = localStorage.getItem('chat_pass');
-
-            if (user === storedUser && pass === storedPass && user !== "") {
+            if (user === localStorage.getItem('chat_user') && pass === localStorage.getItem('chat_pass')) {
+                document.getElementById('chats-mgr-btn').style.display = 'block';
                 window.location.href = 'select_screen.html';
             } else {
                 alert('ACCESS DENIED');
             }
+        }
+
+        function toggleManager() {
+            const panel = document.getElementById('admin-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            renderManager();
+        }
+
+        function renderManager() {
+            const display = document.getElementById('chat-list-display');
+            const currentUser = localStorage.getItem('chat_user');
+            const allChats = JSON.parse(localStorage.getItem('all_chats') || '[]');
+            display.innerHTML = '';
+
+            allChats.forEach((chat, index) => {
+                if (chat.creator === currentUser) {
+                    const div = document.createElement('div');
+                    div.style.border = "1px solid white";
+                    div.style.padding = "10px";
+                    div.style.marginBottom = "10px";
+                    div.innerHTML = `
+                        <p>NAME: ${chat.name} | CODE: ${chat.code}</p>
+                        <p>ID: ${chat.id}</p>
+                        <p>USERS: ${chat.users.join(', ')}</p>
+                        <button onclick="deleteChat(${index})" style="background:red; color:white; width:auto; padding:5px;">DELETE CHAT</button>
+                        <button onclick="kickUserPrompt(${index})" style="background:orange; color:black; width:auto; padding:5px;">KICK USER</button>
+                    `;
+                    display.appendChild(div);
+                }
+            });
+        }
+
+        function deleteChat(index) {
+            let allChats = JSON.parse(localStorage.getItem('all_chats'));
+            allChats.splice(index, 1);
+            localStorage.setItem('all_chats', JSON.stringify(allChats));
+            renderManager();
+        }
+
+        function kickUserPrompt(index) {
+            let allChats = JSON.parse(localStorage.getItem('all_chats'));
+            const userToKick = prompt("Enter username to kick:");
+            allChats[index].users = allChats[index].users.filter(u => u !== userToKick);
+            localStorage.setItem('all_chats', JSON.stringify(allChats));
+            renderManager();
         }
     </script>
 </body>

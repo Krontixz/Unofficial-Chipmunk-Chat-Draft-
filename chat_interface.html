@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chipmunk Chat 2.0 - Room</title>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Courier New', monospace; height: 100vh; display: flex; flex-direction: column; margin: 0; overflow-y: scroll; }
+        #chat-window { flex: 1; padding: 20px; overflow-y: auto; }
+        #input-area { background: #111; padding: 20px; border-top: 2px solid #3366ff; position: sticky; bottom: 0; }
+        input { background: #000; color: #0f0; border: 1px solid #fff; width: 80%; padding: 10px; font-family: 'Courier New'; }
+        .msg { margin-bottom: 10px; }
+        .ts { color: #666; font-size: 12px; }
+        .un { color: #3366ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="chat-window"></div>
+    <div id="input-area">
+        <input type="text" id="msgInput" placeholder="TYPE MESSAGE AND PRESS ENTER...">
+    </div>
+
+    <script>
+        const chatId = new URLSearchParams(window.location.search).get('id');
+        const currentUser = localStorage.getItem('chat_user');
+
+        function loadMessages() {
+            const allChats = JSON.parse(localStorage.getItem('all_chats') || '[]');
+            const chat = allChats.find(c => c.id === chatId);
+            const win = document.getElementById('chat-window');
+            win.innerHTML = '';
+            chat.messages.forEach(m => {
+                win.innerHTML += `<div class="msg"><span class="ts">[${m.time}]</span> <span class="un">${m.user}:</span> ${m.text}</div>`;
+            });
+            win.scrollTop = win.scrollHeight;
+        }
+
+        document.getElementById('msgInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const allChats = JSON.parse(localStorage.getItem('all_chats') || '[]');
+                const chatIndex = allChats.findIndex(c => c.id === chatId);
+                const msg = {
+                    user: currentUser,
+                    time: new Date().toLocaleTimeString(),
+                    text: this.value
+                };
+                allChats[chatIndex].messages.push(msg);
+                localStorage.setItem('all_chats', JSON.stringify(allChats));
+                this.value = '';
+                loadMessages();
+            }
+        });
+
+        setInterval(loadMessages, 1000);
+    </script>
+</body>
+</html>
